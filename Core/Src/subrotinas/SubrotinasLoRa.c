@@ -19,7 +19,6 @@ void protocoloLora() {
 		signed int index = indexOf(bufferLora, "$,01,");
 
 		if(index >= 0) {
-			uint8_t comando = charToByte(bufferLora[index + 6]);
 			flagLedCOM = true; //por enquanto somente feedback
 		}
 

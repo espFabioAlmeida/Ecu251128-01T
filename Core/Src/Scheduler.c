@@ -33,12 +33,21 @@ void tarefas100ms() {
 	if(contadorTimeoutLora) {
 		contadorTimeoutLora --;
 	}
+
+	if(flagLedCOM) {
+		off(LED_ON_GPIO_Port, LED_ON_Pin);
+		flagLedCOM = false;
+	}
+	else {
+		on(LED_ON_GPIO_Port, LED_ON_Pin);
+	}
 }
 /*==============================================================================
 TAREFAS 1s
 ==============================================================================*/
 void tarefas1s() {
 	flagEnviaPacoteLora = true;
+	toggle(LED_CPU_GPIO_Port, LED_CPU_Pin);
 }
 /*==============================================================================
 SCHEDULER

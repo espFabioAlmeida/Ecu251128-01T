@@ -80,6 +80,7 @@ void protocoloRS485() {
 
 		if(index >= 0) {
 			uint8_t comando = charToByte(bufferRS485[index + 2]);
+			comando *= 10;
 			comando += charToByte(bufferRS485[index + 3]);
 
 			switch(comando) {
