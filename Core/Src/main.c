@@ -56,18 +56,21 @@ uint8_t
 
 	flagLedCOM = false,
 
+	flagEnviaPacoteLora = false,
+
 	flagPacoteRS485 = false,
 	flagPacoteLora = false;
 
 uint8_t
 	contadorRS485Buffer = 0,
 	contadorLoraBuffer = 0,
+
+	contadorTimeoutLora = 0,
 	canalLora = 0;
 
 uint16_t
 	enderecoLoraTransmissor = 0,
-	enderecoLoraReceptor = 0,
-	contadorTimeoutLora = 0;
+	enderecoLoraReceptor = 0;
 
 char
 	loraDataIn = 0x00,
@@ -199,6 +202,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  entradasDigitais();
+	  enviaPacoteLora();
 	  protocoloLora();
 	  protocoloRS485();
     /* USER CODE END WHILE */

@@ -28,17 +28,18 @@ extern uint8_t
 	flagLedCOM,
 
 	flagPacoteRS485,
-	flagPacoteLora;
+	flagPacoteLora,
+	flagEnviaPacoteLora;
 
 extern uint8_t
 	contadorRS485Buffer,
 	contadorLoraBuffer,
+	contadorTimeoutLora,
 	canalLora;
 
 extern uint16_t
 	enderecoLoraTransmissor,
-	enderecoLoraReceptor,
-	contadorTimeoutLora;
+	enderecoLoraReceptor;
 
 extern char
 	loraDataIn,
