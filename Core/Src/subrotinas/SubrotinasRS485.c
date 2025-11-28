@@ -64,6 +64,7 @@ void recebeConfiguracaoLora(uint8_t index) {
 	if(configuraLora()) {
 		HAL_UART_Transmit(&huart4, "Sucesso ao configurar\r\n", 23, 200);
 		respostaDadosRadio();
+		salvaConfiguracoesLora();
 		return;
 	}
 
@@ -83,6 +84,7 @@ void protocoloRS485() {
 
 			switch(comando) {
 				case 1: recebeConfiguracaoLora(index); break;
+				case 2: respostaDadosRadio(); break;
 			}
 
 		}

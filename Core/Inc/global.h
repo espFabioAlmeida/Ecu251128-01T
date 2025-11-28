@@ -20,6 +20,7 @@ enum BOOL {
 
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart4;
+extern I2C_HandleTypeDef hi2c1;
 
 extern uint8_t
 	flagEntradaAcionamento,
