@@ -73,6 +73,7 @@ char
 
 char
 	bufferRS485[TAMANHO_BUFFER_RS485],
+	bufferEnviaRS485[TAMANHO_BUFFER_RS485],
 	bufferLora[TAMANHO_BUFFER_LORA],
 	bufferEnvioLora[TAMANHO_BUFFER_LORA];
 /* USER CODE END PV */
@@ -191,7 +192,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  protocoloLoRa();
+	  protocoloLora();
+	  protocoloRS485();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -26,7 +26,7 @@ extern uint8_t
 
 	flagLedCOM,
 
-	flagPacoteRs485,
+	flagPacoteRS485,
 	flagPacoteLora;
 
 extern uint8_t
@@ -45,6 +45,7 @@ extern char
 
 extern char
 	bufferRS485[TAMANHO_BUFFER_RS485],
+	bufferEnviaRS485[TAMANHO_BUFFER_RS485],
 	bufferLora[TAMANHO_BUFFER_LORA],
 	bufferEnvioLora[TAMANHO_BUFFER_LORA];
 #endif /* INC_GLOBAL_H_ */

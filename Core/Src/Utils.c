@@ -152,6 +152,33 @@ MAP (REGRA DE 3 COMPOSTA)
 uint32_t map(uint32_t valor, uint32_t inMin, uint32_t inMax, uint32_t outMin, uint32_t outMax) {
 	return ((valor - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 }
+/*===========================================================================
+TRANSFORMA 2 NIBBLES EM 1 BYTE
+===========================================================================*/
+uint8_t nibblesToByte(uint8_t nibbleSuperior, uint8_t nibbleInferior) {
+	nibbleSuperior <<= 4;
+	nibbleSuperior |= nibbleInferior;
+
+	return nibbleSuperior;
+}
+/*===========================================================================
+EXTRAI 1 NIBBLE DE UM BYTE
+===========================================================================*/
+uint8_t byteToNibble(uint8_t valor, uint8_t offset) {
+
+	if(!offset) {
+		valor &= 0x0F;
+		return valor;
+	}
+
+	if(offset == 1) {
+		valor &= 0xF0;
+		valor >>= 4;
+		return valor;
+	}
+
+	return 0;
+}
 /*==============================================================================
 MAKE 8
 ==============================================================================*/

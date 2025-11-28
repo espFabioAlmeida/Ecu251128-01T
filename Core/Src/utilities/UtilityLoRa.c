@@ -11,15 +11,15 @@
 CONSTANTES DO ARQUIVO
 ==============================================================================*/
 /*==============================================================================
-AGUARDA LoRa
+AGUARDA Lora
 ==============================================================================*/
-void aguardaLoRa(uint16_t tempo) {
+void aguardaLora(uint16_t tempo) {
 	contadorTimeoutLora = tempo;
 	while(contadorTimeoutLora) {
 		HAL_UART_Receive_IT(&huart3, &loraDataIn, 1);
 	}
 	//HAL_UART_Transmit(&huart4, &bufferLoRa, strlen(bufferLoRa), 100); //debug
-	apagaLoRaBuffer();
+	//apagaLoraBuffer();
 }
 /*=============================================================================
 APAGA BUFFER ENVIO GPRS
@@ -77,7 +77,7 @@ void sprintfLora(uint32_t valor, uint8_t qntdDig) {
 /*==============================================================================
 CONFIGURA LoRa
 ==============================================================================*/
-uint8_t configuraLoRa() {
+uint8_t configuraLora() {
 	on(LORA_M0_GPIO_Port, LORA_M0_Pin);
 	on(LORA_M1_GPIO_Port, LORA_M1_Pin);
 	HAL_Delay(100);
@@ -85,7 +85,7 @@ uint8_t configuraLoRa() {
 	if(debounceInverso(LORA_AUX_GPIO_Port, LORA_AUX_Pin)) {
 		uint8_t sucesso = false;
 		uint8_t ponteiro = 0;
-		limpabufferEnvioLora();
+		apagabufferEnvioLora();
 		bufferEnvioLora[0] = 0xC0; //Salvar
 		bufferEnvioLora[1] = make8(enderecoLoraTransmissor, 1);
 		bufferEnvioLora[2] = make8(enderecoLoraTransmissor, 0);
@@ -93,7 +93,7 @@ uint8_t configuraLoRa() {
 		bufferEnvioLora[4] = canalLora;
 		bufferEnvioLora[5] = 0xC4; //opções
 		HAL_UART_Transmit(&huart3, &bufferEnvioLora, 6, 100);
-		aguardaLoRa(20);
+		aguardaLora(20);
 
 		for(uint8_t i = 0; i < TAMANHO_BUFFER_LORA; i ++) {
 			if(bufferLora[i] == 0xC0) {
@@ -111,7 +111,7 @@ uint8_t configuraLoRa() {
 			}
 		}
 
-		apagaLoRaBuffer();
+		apagaLoraBuffer();
 		off(LORA_M0_GPIO_Port, LORA_M0_Pin);
 		off(LORA_M1_GPIO_Port, LORA_M1_Pin);
 		HAL_Delay(100);

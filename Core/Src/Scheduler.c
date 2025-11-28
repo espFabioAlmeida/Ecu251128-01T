@@ -30,7 +30,9 @@ TAREFAS 100ms
 void tarefas100ms() {
 	reiniciaWatchDog();
 
-
+	if(contadorTimeoutLora) {
+		contadorTimeoutLora --;
+	}
 }
 /*==============================================================================
 TAREFAS 1s

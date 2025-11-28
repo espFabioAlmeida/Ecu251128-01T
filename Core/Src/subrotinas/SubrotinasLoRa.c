@@ -10,9 +10,9 @@
 CONSTANTES DO ARQUIVO
 ==============================================================================*/
 /*==============================================================================
-PROTOCOLO LORAa
+PROTOCOLO LORA
 ==============================================================================*/
-void protocoloLoRa() {
+void protocoloLora() {
 
 	if(flagPacoteLora) {
 		signed int index = indexOf(bufferLora, "$,01,");
