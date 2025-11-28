@@ -57,16 +57,22 @@ uint8_t
 
 uint8_t
 	contadorRS485Buffer = 0,
-	contadorLoraBuffer = 0;
+	contadorLoraBuffer = 0,
+	canalLora = 0;
 
-extern char
+uint16_t
+	enderecoLoraTransmissor = 0,
+	enderecoLoraReceptor = 0,
+	contadorTimeoutLora = 0;
+
+char
 	loraDataIn = 0x00,
 	rs485DataIn = 0x00;
 
-extern char
-	buffer485[TAMANHO_BUFFER_485],
-	bufferLora[TAMANHO_BUFFER_LORA];
-
+char
+	bufferRS485[TAMANHO_BUFFER_RS485],
+	bufferLora[TAMANHO_BUFFER_LORA],
+	bufferEnvioLora[TAMANHO_BUFFER_LORA];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,7 +102,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		contadorLoraBuffer ++;
 
 		if(contadorLoraBuffer >= TAMANHO_BUFFER_LORA) {
-			apagaLoRaBuffer();
+			apagaLoraBuffer();
 		}
 
 		//HAL_UART_Transmit(&huart4, &loraDataIn, 1, 100); //Debug
