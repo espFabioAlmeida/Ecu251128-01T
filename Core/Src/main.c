@@ -52,6 +52,8 @@ UART_HandleTypeDef huart4;
 uint8_t
 	flagEntradaAcionamento = false,
 
+	flagLedCOM = false,
+
 	flagPacoteRS485 = false,
 	flagPacoteLora = false;
 
@@ -189,6 +191,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  protocoloLoRa();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

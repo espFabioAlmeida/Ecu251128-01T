@@ -24,6 +24,8 @@ extern UART_HandleTypeDef huart4;
 extern uint8_t
 	flagEntradaAcionamento,
 
+	flagLedCOM,
+
 	flagPacoteRs485,
 	flagPacoteLora;
 
