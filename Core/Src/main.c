@@ -40,6 +40,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
+
 IWDG_HandleTypeDef hiwdg;
 
 TIM_HandleTypeDef htim2;
@@ -52,21 +54,33 @@ UART_HandleTypeDef huart4;
 uint8_t
 	flagEntradaAcionamento = false,
 
+	flagLedCOM = false,
+
+	flagEnviaPacoteLora = false,
+
 	flagPacoteRS485 = false,
 	flagPacoteLora = false;
 
 uint8_t
 	contadorRS485Buffer = 0,
-	contadorLoraBuffer = 0;
+	contadorLoraBuffer = 0,
 
-extern char
+	contadorTimeoutLora = 0,
+	canalLora = 0;
+
+uint16_t
+	enderecoLoraTransmissor = 0,
+	enderecoLoraReceptor = 0;
+
+char
 	loraDataIn = 0x00,
 	rs485DataIn = 0x00;
 
-extern char
-	buffer485[TAMANHO_BUFFER_485],
-	bufferLora[TAMANHO_BUFFER_LORA];
-
+char
+	bufferRS485[TAMANHO_BUFFER_RS485],
+	bufferEnviaRS485[TAMANHO_BUFFER_RS485],
+	bufferLora[TAMANHO_BUFFER_LORA],
+	bufferEnvioLora[TAMANHO_BUFFER_LORA];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,6 +91,7 @@ static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USART4_UART_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -96,7 +111,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		contadorLoraBuffer ++;
 
 		if(contadorLoraBuffer >= TAMANHO_BUFFER_LORA) {
-			apagaLoRaBuffer();
+			apagaLoraBuffer();
 		}
 
 		//HAL_UART_Transmit(&huart4, &loraDataIn, 1, 100); //Debug
@@ -169,6 +184,7 @@ int main(void)
   MX_TIM3_Init();
   MX_USART3_UART_Init();
   MX_USART4_UART_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start(&htim2); //Timer do delay us
@@ -177,12 +193,19 @@ int main(void)
   off(LORA_M0_GPIO_Port, LORA_M0_Pin);
   off(LORA_M1_GPIO_Port, LORA_M1_Pin);
 
+  verificaEeprom();
+  readEeprom();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  entradasDigitais();
+	  enviaPacoteLora();
+	  protocoloLora();
+	  protocoloRS485();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -200,12 +223,16 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSI48
+                              |RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -225,6 +252,60 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x00201D2B;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
 }
 
 /**

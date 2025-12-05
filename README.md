@@ -15,4 +15,6 @@ A placa receptora irá ecoar o que recebeu como forma de feed back <br>
 -$,01,123,0A,\r\n <br>
 123: É o endereço, o software irá colocar o número 4 no final. 123 fica 1234, o endereço do receptor será o mesmo, porém finalizado em 5 (1235). <br>
 0A: É o canal, que deve ser o mesmo do receptor. <br>
-A placa irá responder se conseguiu escrever o endereço e o canal no rádio, informando qual o enedereço escrito. <br>
+A placa irá responder se conseguiu escrever o endereço e o canal no rádio, informando qual o endereço escrito. <br>
+-$,02,\r\n <br>
+Solicita o endereço salvo na eeprom. A placa irá responder o endereço e o canal salvos<br>
