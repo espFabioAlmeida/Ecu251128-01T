@@ -15,24 +15,39 @@ enum BOOL {
 	true
 };
 
-#define TAMANHO_BUFFER_485 	32
+#define TAMANHO_BUFFER_RS485 	32
 #define TAMANHO_BUFFER_LORA 32
+
+extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart4;
+extern I2C_HandleTypeDef hi2c1;
 
 extern uint8_t
 	flagEntradaAcionamento,
 
-	flagPacoteRs485,
-	flagPacoteLora;
+	flagLedCOM,
+
+	flagPacoteRS485,
+	flagPacoteLora,
+	flagEnviaPacoteLora;
 
 extern uint8_t
 	contadorRS485Buffer,
-	contadorLoraBuffer;
+	contadorLoraBuffer,
+	contadorTimeoutLora,
+	canalLora;
+
+extern uint16_t
+	enderecoLoraTransmissor,
+	enderecoLoraReceptor;
 
 extern char
 	loraDataIn,
 	rs485DataIn;
 
 extern char
-	buffer485[TAMANHO_BUFFER_485],
-	bufferLora[TAMANHO_BUFFER_LORA];
+	bufferRS485[TAMANHO_BUFFER_RS485],
+	bufferEnviaRS485[TAMANHO_BUFFER_RS485],
+	bufferLora[TAMANHO_BUFFER_LORA],
+	bufferEnvioLora[TAMANHO_BUFFER_LORA];
 #endif /* INC_GLOBAL_H_ */
